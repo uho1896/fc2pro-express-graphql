@@ -31,7 +31,7 @@ const schema = `
 
   type Query {
     getUsers: [User]
-    getUser(_id: ID!): User
+    getUser(_id: ID): User
     getUserByEmail(email: String!): User
   }
 
@@ -41,7 +41,7 @@ const schema = `
     updateUser(_id: ID!, email: String, name: String, role: Int, status: Int): String
     activateUser(activate: String!): String
     forgetPwd(email: String!): String
-    resetPwd(reset: String!, password: String!): String
+    resetPwd(reset: String, password: String!): String
   }
 `;
 
@@ -115,7 +115,7 @@ const resolver = {
   },
   getUser: async ({_id}, request) => {
     const authUser = await auth.verify(request.token);
-    if (authUser._id == _id) {
+    if (!_id || authUser._id == _id) {
       return new User({...authUser});
     } else if (!auth.authorize(authUser.role)) {
       throw new Error('no access');
@@ -184,14 +184,23 @@ const resolver = {
     });
     return `reset link has sent to ${email}`;
   },
-  resetPwd: async ({reset, password}) => {
-    const resetObj = utils.decodeString(reset);
-    const user = await db.findOne({
-      filter: {email: resetObj.email},
-    });
-    if (!user || user.resetToken != resetObj.resetToken) {
-      throw new Error(`invalid reset - ${reset}`);
-    } else if (Number(user.status) != 1) {
+  resetPwd: async ({reset, password}, request) => {
+    let user;
+    if (reset) {
+      const resetObj = utils.decodeString(reset);
+      user = await db.findOne({
+        filter: {email: resetObj.email},
+      });
+      if (!user || user.resetToken != resetObj.resetToken) {
+        throw new Error(`invalid reset - ${reset}`);
+      }
+    } else if (request.token) {
+      user = await auth.verify(request.token);
+    } else {
+      throw new Error('no access to reset');
+    }
+
+    if (Number(user.status) != 1) {
       throw new Error('account not activated');
     }
 
