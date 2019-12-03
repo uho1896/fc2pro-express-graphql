@@ -6,6 +6,9 @@ Sample project with express, grphql and mongodb
 - [MongoDB](https://www.mongodb.com/)
 - Smtp mail account
 
+## Pair frontend
+- [fc2pro-vue-graphql](https://github.com/uho1896/fc2pro-vue-graphql)
+
 ## Installing
 
 Using npm:
@@ -22,7 +25,7 @@ $ yarn install
 ## Env
 
 ```bash
-export smtpMailUser=testsmtp@outlook.com
+export smtpMailUser=testsmtp@example.com
 export smtpMailPassword=smptmailpassword
 export jwtSecret=jwt-secret
 export dbUser=user
