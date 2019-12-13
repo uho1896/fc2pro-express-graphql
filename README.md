@@ -6,6 +6,9 @@ Sample project with express, grphql and mongodb
 - [MongoDB](https://www.mongodb.com/)
 - Smtp mail account
 
+## Sample endpoint
+- [fc2pro endpoint](http://nanshan.fun/fc2pro/q)
+
 ## Pair frontend
 - [fc2pro-vue-graphql](https://github.com/uho1896/fc2pro-vue-graphql)
 
